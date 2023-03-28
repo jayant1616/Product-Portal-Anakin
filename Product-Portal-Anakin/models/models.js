@@ -1,7 +1,14 @@
 const Sequelize = require('sequelize');
+const dotenv = require('dotenv');
 
-const sequelize = new Sequelize('product_portal_db','admin','J1#jayant',{
-    host : 'database-1.cu9qjidkw9kw.ap-south-1.rds.amazonaws.com',
+if (process.env.NODE_ENV === 'production') {
+  dotenv.config({ path: '.env.production' });
+} else {
+  dotenv.config({ path: '.env.development' });
+}
+
+const sequelize = new Sequelize('product_portal_db',`${process.env.DB_USER}` ,`${process.env.DB_PASSWORD}`,{
+    host : `${process.env.DB_HOST}`,
     dialect : 'mysql',
 });
 
