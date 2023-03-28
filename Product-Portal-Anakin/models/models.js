@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize('product_portal_db','admin','J1#jayant16',{
+const sequelize = new Sequelize('product_portal_db','admin','J1#jayant',{
     host : 'database-1.cu9qjidkw9kw.ap-south-1.rds.amazonaws.com',
     dialect : 'mysql',
 });
