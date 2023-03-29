@@ -18,7 +18,7 @@ const Sequelize = require('sequelize');
 
 let sequelize, Brand, Retailer, Product, Store, Promotion, User, Alert;
 
-console.log("the hostname is ", process.env.DB_HOST);
+console.log("the password is ", process.env.DB_PASSWORD);
 sequelize = new Sequelize('product_portal_db',process.env.DB_USER ,process.env.DB_PASSWORD,{
         host : process.env.DB_HOST,
         dialect : 'mysql',
