@@ -40,8 +40,8 @@ npm start
 
 > | http code     | content-type                      | response                                                            |
 > |---------------|-----------------------------------|---------------------------------------------------------------------|
-> | `201`         | `text/plain;charset=UTF-8`        | `user and brand created successfully`                                |
-> | `401`         | `application/json`                | `username already in use`                            |
+> | `201`         | `application/json`        | `{username:,token,brandId:}`                                |
+> | `401`         | `application/json`                | `{message : "username already in use"}`                            |
 
 </details>
 
@@ -60,12 +60,8 @@ npm start
 
 > | http code     | content-type                      | response                                                            |
 > |---------------|-----------------------------------|---------------------------------------------------------------------|
-> | `200`         | `application/json`        | `{
-    "message": "login successful",
-    "token": 
-    "brandId": 
-}`                            |
-> | `401`         | `application/json`                | `not authorised`                            |
+> | `200`         | `application/json`        | `{"message": "","token": "brandId": }`                            |
+> | `401`         | `application/json`                | `{message : "not authorised"}`                            |
 
 </details>
 
@@ -86,7 +82,7 @@ npm start
 
 > | http code     | content-type                      | response                                                            |
 > |---------------|-----------------------------------|---------------------------------------------------------------------|
-> | `200`         | `text/plain;charset=UTF-8`        | An array containing all the products                                                       |
+> | `200`         | `application/json`        | An array containing all the products                                                       |
 
 
 </details>
@@ -104,7 +100,7 @@ npm start
 
 > | http code     | content-type                      | response                                                            |
 > |---------------|-----------------------------------|---------------------------------------------------------------------|
-> | `200`         | `text/plain;charset=UTF-8`        | array containing the stores                                                         |
+> | `200`         | `application/json`        | array containing the stores                                                         |
 
 
 ##### Example cURL
@@ -124,7 +120,7 @@ npm start
 
 > | http code     | content-type                      | description        |
 > |---------------|-----------------------------------|---------------------------------------------------------------------|
-> | `201`         | `text/plain;charset=UTF-8`        | product created succesfully                                                    |
+> | `201`         | `application/json`        | product created succesfully                                                    |
 > | `400`         | `application/json`                | `bad request, brandId is missing`                            |
 
 </details>
@@ -209,6 +205,11 @@ npm start
 > |   storeId  |  required | int   | store id  |
 > |   discount  |  required | float   | discount to be applied  |
 
+##### Headers
+
+> | name      |  type     | description| 
+> |-----------|-----------|------------|
+> | jwt-token-x    |  required | The JWT token returned by login API   | 
 
 ##### Responses
 
