@@ -18,11 +18,12 @@ const Sequelize = require('sequelize');
 
 let sequelize, Brand, Retailer, Product, Store, Promotion, User, Alert;
 
-sequelize = new Sequelize('product_portal_db','root','admin',{
-    host : '127.0.0.1',
-    dialect : 'mysql',
-});
-console.log("repeat" ,process.env.DB_HOST);
+console.log("the hostname is ", process.env.DB_HOST);
+sequelize = new Sequelize('product_portal_db',`${process.env.DB_USER}` ,`${process.env.DB_PASSWORD}`,{
+        host : `${process.env.DB_HOST}`,
+        dialect : 'mysql',
+    });
+    
 Brand = sequelize.define('Brand',{
     name : Sequelize.STRING,
 });
