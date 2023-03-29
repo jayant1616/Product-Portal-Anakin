@@ -19,15 +19,15 @@ const Sequelize = require('sequelize');
 let sequelize, Brand, Retailer, Product, Store, Promotion, User, Alert;
 
 console.log("the hostname is ", process.env.DB_HOST);
-// sequelize = new Sequelize('product_portal_db',`${process.env.DB_USER}` ,`${process.env.DB_PASSWORD}`,{
-//         host : `${process.env.DB_HOST}`,
-//         dialect : 'mysql',
-//     });
+sequelize = new Sequelize('product_portal_db',process.env.DB_USER ,process.env.DB_PASSWORD,{
+        host : process.env.DB_HOST,
+        dialect : 'mysql',
+    });
 
-sequelize = new Sequelize('product_portal_db', 'admin' ,'J1#jayant',{
-    host : 'database-1.cu9qjidkw9kw.ap-south-1.rds.amazonaws.com',
-    dialect : 'mysql',
-});
+// sequelize = new Sequelize('product_portal_db', 'admin' ,'J1#jayant',{
+//     host : 'database-1.cu9qjidkw9kw.ap-south-1.rds.amazonaws.com',
+//     dialect : 'mysql',
+// });
 
 Brand = sequelize.define('Brand',{
     name : Sequelize.STRING,
