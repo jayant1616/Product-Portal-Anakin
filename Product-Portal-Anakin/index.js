@@ -64,7 +64,7 @@ try{
     });
 }
 catch(err){
-    console.log("cant connect to db ");
+    console.log("cant connect to db ", err);
 }
 }
 start();
