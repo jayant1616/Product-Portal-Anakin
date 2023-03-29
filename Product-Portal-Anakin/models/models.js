@@ -1,47 +1,58 @@
 const Sequelize = require('sequelize');
-const dotenv = require('dotenv');
+// const sequelize = require('../index');
+// const dotenv = require('dotenv').config();
 
-if (process.env.NODE_ENV === 'production') {
-  dotenv.config({ path: '.env.production' });
-} else {
-  dotenv.config({ path: '.env.development' });
-}
+// if (process.env.NODE_ENV === 'production') {
+//   dotenv.config({ path: '.env.production' });
+// } else { 
 
-const sequelize = new Sequelize('product_portal_db',`${process.env.DB_USER}` ,`${process.env.DB_PASSWORD}`,{
-    host : `${process.env.DB_HOST}`,
+//     dotenv.config({ path: '.env.development' });
+// }
+// console.log(process.env);
+
+
+// const sequelize = new Sequelize('product_portal_db',`${process.env.DB_USER}` ,`${process.env.DB_PASSWORD}`,{
+//     host : `${process.env.DB_HOST}`,
+//     dialect : 'mysql',
+// });
+
+let sequelize, Brand, Retailer, Product, Store, Promotion, User, Alert;
+
+sequelize = new Sequelize('product_portal_db','root','admin',{
+    host : '127.0.0.1',
     dialect : 'mysql',
 });
-
-const Brand = sequelize.define('Brand',{
+console.log("repeat" ,process.env.DB_HOST);
+Brand = sequelize.define('Brand',{
     name : Sequelize.STRING,
 });
 
-const Retailer = sequelize.define('Retailer',{
+Retailer = sequelize.define('Retailer',{
     name : Sequelize.STRING,
 });
 
-const Product = sequelize.define('Product',{
+Product = sequelize.define('Product',{
     name : Sequelize.STRING,
 });
 
-const Store = sequelize.define('Store',{
+Store = sequelize.define('Store',{
     name : Sequelize.STRING,
 });
 
-const Promotion = sequelize.define('Promotion',{
+Promotion = sequelize.define('Promotion',{
     discount : Sequelize.FLOAT,
     startDate : Sequelize.DATE,
     endDate : Sequelize.DATE,
 });
 
-const User = sequelize.define('User',{
+User = sequelize.define('User',{
     username : Sequelize.STRING,
     password : Sequelize.STRING,
 });
 
-const Alert = sequelize.define('Alert',{
-   priceDecrease : Sequelize.INTEGER,
-   time : Sequelize.TIME
+Alert = sequelize.define('Alert',{
+    priceDecrease : Sequelize.INTEGER,
+    time : Sequelize.TIME
 })
 
 Brand.hasMany(Product);
@@ -52,17 +63,12 @@ Store.belongsTo(Retailer);
 
 Product.belongsToMany(Store,{through:Promotion});
 Store.belongsToMany(Product,{through:Promotion});
-// Promotion.hasMany(Store,{foreignKey:'storeId',sourceKey:'id'});
 
 User.hasOne(Brand);
 Brand.hasOne(User);
 
 Product.hasMany(Alert);
 Alert.belongsTo(Product);
-
-sequelize.sync({forces:true}).then(()=>{
-    console.log("Database synced");
-})
 
 module.exports = {
     "Brand" : Brand,
@@ -72,5 +78,5 @@ module.exports = {
     "Promotion": Promotion,
     "User" : User,
     'sequelize' : sequelize,
-    "Alert" : Alert
+    "Alert" : Alert,
 }

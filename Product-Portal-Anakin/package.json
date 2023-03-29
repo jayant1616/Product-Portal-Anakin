@@ -4,18 +4,23 @@
   "description": "A simple portal to guide you to the prouct listings at various stores.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon index.js"
   },
   "author": "Jayant Chaudhary",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
+    "debug": "^4.3.4",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
     "mysql2": "^3.2.0",
     "nodemon": "^2.0.22",
     "sequelize": "^6.30.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "supertest": "^6.3.3"
   }
 }

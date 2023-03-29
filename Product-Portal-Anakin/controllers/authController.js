@@ -7,34 +7,50 @@ const registerController = async (req,res)=>{
     const hashedPassword = bcrypt.hashSync(password,10);
 
     //check if username is in use:
-    const userExists = await Db.User.findOne({
-        where : {
-            username : username,
-        }
-    })
-    console.log("user to be registered is ", userExists);
-    if(userExists){
-        return res.status(401).json({message:'username already exists'})
+    let userExists;
+    try{
+        userExists = await Db.User.findOne({
+            where : {
+                username : username,
+            }
+        })
+    }
+    catch(err){
+        console.log("error in registering new user", err);
+        res.status(500).json({message:"internal server error"});
     }
 
-    const user = await Db.User.create({
-        username : username,
-        password:hashedPassword,
-    });
-    const brand = await Db.Brand.create({
-        name : brandname,
-        UserId : user.id,
-    });
-    Db.User.update({
-        BrandId : brand.id
-    },{
-        where:{
-            id : user.id
-        }
-    })
+    console.log("user to be registered is ", userExists);
+    if(userExists){
+        return res.status(401).json({message:'username already in use'})
+    }
+
+    let user, brand;
+    
+    try{
+            user = await Db.User.create({
+            username : username,
+            password:hashedPassword,
+        });
+            brand = await Db.Brand.create({
+            name : brandname,
+            UserId : user.id,
+        });
+        Db.User.update({
+            BrandId : brand.id
+        },{
+            where:{
+                id : user.id
+            }
+        });
+    }
+    catch(err){
+        console.log("Database error in creating new user or brand");
+        res.status(500).json({message:"internal server error"});
+    }
 
 
-    const token = jwt.sign({userId:user.id},'secretKey');
+    const token = jwt.sign({userId:user.id,brandId:brand.id},'secretKey');
     res.status(201).json({
         username : user.username,
         token:token,
@@ -52,13 +68,13 @@ const loginController = async (req,res)=>{
     if(!user){
         return res.status(401).json({message:'Invalid username'});
     }
-    console.log("password is ",user);
-    const authorised = await bcrypt.compare(password,user.password);
-    if(!authorised){
+    
+    const passwordMatches = await bcrypt.compare(password,user.password);
+    if(!passwordMatches){
         return res.status(401).json({message:'Incorrct pasword'});
     }
-    const token = jwt.sign({userId:user.id},'secretKey');
-    res.json({message:'login successful',token});
+    const token = jwt.sign({userId:user.id,brandId:user.BrandId},'secretKey');
+    res.json({message:'login successful',token:token,brandId : user.BrandId});
 } 
 
 module.exports = {
