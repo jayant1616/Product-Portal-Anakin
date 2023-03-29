@@ -26,7 +26,7 @@ app.post('/login',authControler.loginController);
 app.post('/products/create',productController.createNewProduct);
 app.post('/retailers/create',productController.createRetailer);
 app.post('/stores/create',productController.createStore);
-app.post('products/list',productController.listProduct);
+app.post('/products/list',productController.listProduct);
 
 // let sequelize;
 // const start =  ()=>{

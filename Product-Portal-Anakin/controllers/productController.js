@@ -3,63 +3,81 @@ const Db = require('../models/models');
 
 
 const getProducts = async (req,res) => {
-    const products = await Db.Product.findAll({
-        where : {
-            brandId : req.params.brandId
-        }
-    });
+    let products;
+    try{
+        products = await Db.Product.findAll({
+            where : {
+                brandId : req.params.brandId
+            }
+        });
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({message:'internal server error'});
+    }
     res.json({products:products});
 };
 
 const getStores = async (req,res) => {
+    let sellingStores, nonSellingStores;
+    try{
+        sellingStores  = await Db.sequelize.query('SELECT id,name FROM (Stores INNER JOIN Promotions) where Promotions.ProductId = :prdId',{
+            replacements : {prdId : req.params.productId},
+            type : Sequelize.QueryTypes.SELECT
+        });
+        
+        let sellingStoresId = [];
+        sellingStores.forEach(element => {
+            sellingStoresId.push(element.id);
+        });
 
-    const sellingStores  = await Db.sequelize.query('SELECT id,name FROM (Stores INNER JOIN Promotions) where Promotions.ProductId = :prdId',{
-        replacements : {prdId : req.params.productId},
-        type : Sequelize.QueryTypes.SELECT
-    });
-    
-    let sellingStoresId = [];
-    sellingStores.forEach(element => {
-        sellingStoresId.push(element.id);
-    });
-
-    const nonSellingStores  = await Db.sequelize.query('SELECT id,name FROM Stores where id not in (:stores)',{
-        replacements : {stores:sellingStoresId},
-        type : Sequelize.QueryTypes.SELECT
-    });
-
+        nonSellingStores  = await Db.sequelize.query('SELECT id,name FROM Stores where id not in (:stores)',{
+            replacements : {stores:sellingStoresId},
+            type : Sequelize.QueryTypes.SELECT
+        });
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({message:'internal server error'});
+    }
     res.json({sellingStoresId:sellingStores,nonsellingStoresId:nonSellingStores});
 };
 
 const applyPromotion = async (req,res) => {
-    const existingPromotion = await Db.Promotion.findOne({
-        where : {
-            ProductId :req.params.productId,
-            StoreId : req.params.storeId
-        }
-    });
-    if(existingPromotion.discount < req.params.discount){
-        const alert = Db.Alert.create({
-            priceDecrease : (req.params.discount - existingPromotion.discount),
-            // time : now()
+    let newPromotion;
+    try{
+        const existingPromotion = await Db.Promotion.findOne({
+            where : {
+                ProductId :req.params.productId,
+                StoreId : req.params.storeId
+            }
         });
-    }
-    const newPromotion = await Db.Promotion.update({
-        discount : req.params.discount,
-    },{
-        where : {
-            ProductId : req.params.productId,
-            StoreId : req.params.storeId
+        if(existingPromotion.discount < req.params.discount){
+            const alert = Db.Alert.create({
+                priceDecrease : (req.params.discount - existingPromotion.discount),
+                // time : now()
+            });
         }
-    })
-
+        newPromotion = await Db.Promotion.update({
+            discount : req.params.discount,
+        },{
+            where : {
+                ProductId : req.params.productId,
+                StoreId : req.params.storeId
+            }
+        })
+    }
+    catch(err){
+        console.log(err);
+        return res.status(500).json({message:'internal server error'});
+    }
     res.json(newPromotion);
 }
 
 const createNewProduct = async (req,res)=>{
     let product;
-    if(!req.brandId){
-        return res.status(402).json({message:'missing brandId in body'});
+    if(req.body.brandId === undefined){
+        return res.status(400).json({message:'missing brandId in body'});
     }
     try{
         product = await Db.Product.create({
@@ -69,7 +87,7 @@ const createNewProduct = async (req,res)=>{
     }
     catch(err){
         console.log(err);
-        res.status.json({message:'internal server error'});
+        return res.status(500).json({message:'internal server error', error : err});
     }      
 
     res.json({product:product});
@@ -84,7 +102,7 @@ const createRetailer = async (req,res) =>{
     }
     catch(err){
         console.log(err);
-        res.status.json({message:'internal server error'});
+        res.status(500).json({message:'internal server error'});
     }
 
     res.json({retailer:retailer}); 
@@ -92,15 +110,19 @@ const createRetailer = async (req,res) =>{
 
 const createStore = async (req,res) =>{
     let store;
+    if(req.body.retailerId === undefined){
+        return res.status(400).json({message:'missing retailerId in body'});
+    }
+
     try{
         store = await Db.Store.create({
             name : req.body.name,
-            StoreId : req.body.storeId,
+            RetailerId : req.body.retailerId,
         })
     }
     catch(err){
         console.log(err);
-        res.status.json({message:'internal server error'});
+        res.status(500).json({message:'internal server error'});
     }
 
     res.json({store:store});
@@ -108,16 +130,19 @@ const createStore = async (req,res) =>{
 
 const listProduct  = async (req,res) =>{
     let promotion;
+    if(req.body.productId === undefined || req.body.storeId === undefined){
+        return res.status(400).json({message:'productId or storeId missing in request body'});
+    }
     try{
         promotion = await Db.Promotion.create({
-            productId : req.body.productId,
+            ProductId : req.body.productId,
             StoreId : req.body.storeId,
             discount : 0,
         })
     }
     catch(err){
         console.log(err);
-        res.status.json({message:'internal server error'});
+        res.status(500).json({message:'internal server error'});
     }
 
     res.json({message : `Product ${req.body.productId} listed at store ${req.body.storeId} `});
