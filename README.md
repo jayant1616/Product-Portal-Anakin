@@ -1,10 +1,8 @@
 ### Product Portal
 
-The project runs on Node.js using Express.js
-Database Manager : MySql
-Object Data Manager (ODM)  : Sequelize
+- The project runs on Node.js using Express.js
 
-To install Dependencies:
+- To install Dependencies:
 ```
 cd Product-Portal-Anakin 
 ```
@@ -12,10 +10,15 @@ cd Product-Portal-Anakin
 npm install
 ```
 
-To run server :
+- To run server :
 ```
 npm start
 ```
+
+- Setting up database : 
+
+    This project uses Mysql as the database. Create a database named `product_portal_db` in the local mysql server. Replace the credentials in `./Product_Portal-Anakin/.env.development` with local mysql server credentials.
+
 
 ------------------------------------------------------------------------------------------
 
