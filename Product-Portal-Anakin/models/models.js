@@ -1,20 +1,4 @@
 const Sequelize = require('sequelize');
-// const sequelize = require('../index');
-// const dotenv = require('dotenv').config();
-
-// if (process.env.NODE_ENV === 'production') {
-//   dotenv.config({ path: '.env.production' });
-// } else { 
-
-//     dotenv.config({ path: '.env.development' });
-// }
-// console.log(process.env);
-
-
-// const sequelize = new Sequelize('product_portal_db',`${process.env.DB_USER}` ,`${process.env.DB_PASSWORD}`,{
-//     host : `${process.env.DB_HOST}`,
-//     dialect : 'mysql',
-// });
 
 let sequelize, Brand, Retailer, Product, Store, Promotion, User, Alert;
 
@@ -24,10 +8,6 @@ sequelize = new Sequelize('product_portal_db',process.env.DB_USER ,process.env.D
         dialect : 'mysql',
     });
 
-// sequelize = new Sequelize('product_portal_db', 'admin' ,'J1#jayant',{
-//     host : 'database-1.cu9qjidkw9kw.ap-south-1.rds.amazonaws.com',
-//     dialect : 'mysql',
-// });
 
 Brand = sequelize.define('Brand',{
     name : Sequelize.STRING,

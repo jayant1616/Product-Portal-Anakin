@@ -28,37 +28,12 @@ app.post('/retailers/create',productController.createRetailer);
 app.post('/stores/create',productController.createStore);
 app.post('/products/list',productController.listProduct);
 
-// let sequelize;
-// const start =  ()=>{
-//     try{
-//         sequelize = new Sequelize('product_portal_db','root','admin',{
-//             host : '127.0.0.1',
-//             dialect : 'mysql',
-//         });
-
-//         app.listen(3000,()=>{
-//             debug('server up and running @ port 3000');
-//         });
-
-//     }
-//     catch(err){
-//         console.log("error in connnecting to the database ",err);
-//     }
-// }
-
-// start();
 const start = async()=>{
 try{
-    // connectDb();
+    
     await sequelize.authenticate();
     await sequelize.sync({forces:true,logging:false});
-        // .then(()=>{
-        //     console.log("Database synced");
-        // })
-        // .catch((err)=>{
-        //     console.log("error in syncing db");
-        //     throw err
-        // })
+
     app.listen(3000,()=>{
         console.log('server up and running @ port 3000');
     });
